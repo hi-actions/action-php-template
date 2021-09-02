@@ -28,6 +28,10 @@ jobs:
   # https://docs.github.com/cn/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions
   build-and-push-image:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [ 8.0 ]
     # needs: install-deps
     permissions:
       contents: read
@@ -35,6 +39,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      # usage refer https://github.com/shivammathur/setup-php
+      - name: Setup PHP ${{ matrix.php }}
+        timeout-minutes: 5
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php}}
+          tools: pecl, php-cs-fixer, phpunit
+          extensions: mbstring, dom, fileinfo, mysql, openssl # , swoole-4.4.19 #optional, setup extensions
+          ini-values: post_max_size=56M, short_open_tag=On #optional, setup php.ini configuration
+          coverage: none #optional, setup coverage driver: xdebug, none
+
+      - name: Install deps and run
+        run: |
+          composer install --no-progress
+          php bin/app
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action

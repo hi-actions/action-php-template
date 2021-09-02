@@ -1,5 +1,8 @@
 # action-php-template
 
+[![deploy-image](https://github.com/hi-actions/action-php-template/actions/workflows/deploy-image.yml/badge.svg)](https://github.com/hi-actions/action-php-template/actions/workflows/deploy-image.yml)
+[![Test-run](https://github.com/hi-actions/action-php-template/actions/workflows/test-run.yml/badge.svg)](https://github.com/hi-actions/action-php-template/actions/workflows/test-run.yml)
+
 Template for GitHub action by php.
 
 ## Init Template

@@ -3,8 +3,10 @@ name: Test-run
 on:
   push:
     paths:
+      - 'bin/app'
       - '**.php'
-      - '**.json'
+      - '**.yml'
+      - 'composer.json'
 
 jobs:
   test:

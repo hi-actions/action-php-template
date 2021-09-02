@@ -1,4 +1,10 @@
 #
 FROM php:8.0-alpine
 
-ENTRYPOINT ["/toolapp"]
+WORKDIR /appdir
+COPY . /appdir
+
+RUN composer install --no-progress \
+  && comoser clearcache \
+
+ENTRYPOINT ["php", "bin/app", "hello"]

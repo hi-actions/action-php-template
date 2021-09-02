@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        go: [ 1.16 ]
+        php: [ 8.0 ]
 
     steps:
       - name: Checkout
@@ -27,19 +27,24 @@ jobs:
           echo "RELEASE_TAG=${GITHUB_REF:10}" >> $GITHUB_ENV
           echo "RELEASE_NAME=$GITHUB_WORKFLOW" >> $GITHUB_ENV
 
-      # https://github.com/actions/setup-go
-      - name: Use Go ${{ matrix.go }}
-        timeout-minutes: 3
-        uses: actions/setup-go@v2
+      # usage refer https://github.com/shivammathur/setup-php
+      - name: Setup PHP ${{ matrix.php }}
+        timeout-minutes: 5
+        uses: shivammathur/setup-php@v2
         with:
-          go-version: ${{ matrix.go }}
+          php-version: ${{ matrix.php}}
+          tools: pecl, php-cs-fixer, phpunit
+          extensions: mbstring, dom, fileinfo, mysql, openssl, igbinary, redis # , swoole-4.4.19 #optional, setup extensions
+          ini-values: post_max_size=56M, short_open_tag=On #optional, setup php.ini configuration
+          coverage: none #optional, setup coverage driver: xdebug, none
 
-      - name: Build package
+      - name: Install deps and run
         run: |
-          go build -o ./toolapp
-          ./toolapp
+          composer install --no-progress
+          php bin/app
+          php bin/app hello
 
       - name: Use action and run
-        use: hi-actions/action-go-template@main
+        use: hi-actions/action-php-template@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
